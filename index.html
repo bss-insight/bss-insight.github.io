@@ -143,6 +143,7 @@
   .ferr{display:none;color:#ff8a8a;font-size:13px;font-weight:500}
   .ferr.on{display:block}
   input.invalid{border-color:#ff8a8a}
+  .consent.invalid{border-color:#ff8a8a}
 
   .done{display:none;text-align:center;padding:26px 18px;margin-top:22px;border:1px solid var(--w15);background:var(--w08);border-radius:18px}
   .done strong{display:block;font-size:21px;font-weight:800;margin-bottom:8px}
@@ -272,7 +273,7 @@
         <!-- 스팸 방지용 칸입니다. 사람에게는 보이지 않습니다. -->
         <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-        <div class="consent">
+        <div class="consent" id="consentBox">
           <div>
             <label><input type="checkbox" name="consent" value="Y" class="agree"> [필수] 개인정보 수집·이용 동의</label>
             <details>
@@ -359,9 +360,12 @@
   }
   fName.addEventListener('input', function(){ if (fName.value.trim()) clearField(fName, errName); });
   fEmail.addEventListener('input', function(){ clearField(fEmail, errEmail); });
-  agrees.concat([]).forEach(function(c){ c.addEventListener('change', function(){ err.textContent = ''; }); });
+  var consentBox = document.getElementById('consentBox');
+  // 필수 동의가 모두 체크되면 에러 표시를 지웁니다.
+  function checkConsent(){ if (agrees.every(function(x){ return x.checked; })) { err.textContent = ''; consentBox.classList.remove('invalid'); } }
+  agrees.forEach(function(c){ c.addEventListener('change', checkConsent); });
 
-  agreeAll.addEventListener('change', function(){ agrees.forEach(function(c){ c.checked = agreeAll.checked; }); err.textContent = ''; });
+  agreeAll.addEventListener('change', function(){ agrees.forEach(function(c){ c.checked = agreeAll.checked; }); checkConsent(); });
   agrees.forEach(function(c){ c.addEventListener('change', function(){ agreeAll.checked = agrees.every(function(x){ return x.checked; }); }); });
 
   function subscribed(){
@@ -394,7 +398,7 @@
     if (emailMsg) showField(fEmail, errEmail, emailMsg);
     if (nameMsg || emailMsg) { reveal(nameMsg ? errName : errEmail, nameMsg ? fName : fEmail); return; }
 
-    if (!fd.get('consent') || !fd.get('mail')) { err.textContent = '필수 항목에 동의해 주세요.'; reveal(err); return; }
+    if (!fd.get('consent') || !fd.get('mail')) { err.textContent = '필수 항목에 동의해 주세요.'; consentBox.classList.add('invalid'); reveal(consentBox); return; }
 
     var body = new URLSearchParams();
     body.append('name', name);
