@@ -140,6 +140,9 @@
   .consent th,.consent td{text-align:left;padding:7px 4px;border-top:1px solid var(--w15);vertical-align:top}
   .consent th{width:70px;color:var(--w80);font-weight:700}
   .err{color:#ff8a8a;font-size:13px;min-height:1em}
+  .ferr{display:none;color:#ff8a8a;font-size:13px;font-weight:500}
+  .ferr.on{display:block}
+  input.invalid{border-color:#ff8a8a}
 
   .done{display:none;text-align:center;padding:26px 18px;margin-top:22px;border:1px solid var(--w15);background:var(--w08);border-radius:18px}
   .done strong{display:block;font-size:21px;font-weight:800;margin-bottom:8px}
@@ -256,10 +259,12 @@
 
       <form id="leadForm" novalidate>
         <label class="f">이름
-          <input type="text" name="name" autocomplete="name" maxlength="50" required placeholder="홍길동">
+          <input type="text" name="name" id="fName" autocomplete="name" maxlength="50" required placeholder="홍길동" aria-describedby="errName">
+          <span class="ferr" id="errName" role="alert"></span>
         </label>
         <label class="f">이메일
-          <input type="email" name="email" autocomplete="email" inputmode="email" maxlength="100" required placeholder="name@company.com">
+          <input type="email" name="email" id="fEmail" autocomplete="email" inputmode="email" maxlength="100" required placeholder="name@company.com" aria-describedby="errEmail">
+          <span class="ferr" id="errEmail" role="alert"></span>
         </label>
         <label class="f"><span>궁금한 점 <small>(선택)</small></span>
           <textarea name="question" maxlength="1000" placeholder="토큰증권이나 바이셀스탠다드에 대해 궁금한 점을 자유롭게 적어 주세요."></textarea>
@@ -343,7 +348,20 @@
   var agreeAll = document.getElementById('agreeAll');
   var agrees = Array.prototype.slice.call(document.querySelectorAll('.agree'));
 
-  agreeAll.addEventListener('change', function(){ agrees.forEach(function(c){ c.checked = agreeAll.checked; }); });
+  var fName = document.getElementById('fName'), fEmail = document.getElementById('fEmail');
+  var errName = document.getElementById('errName'), errEmail = document.getElementById('errEmail');
+  function showField(input, box, msg){ input.classList.add('invalid'); input.setAttribute('aria-invalid','true'); box.textContent = msg; box.classList.add('on'); }
+  function clearField(input, box){ input.classList.remove('invalid'); input.removeAttribute('aria-invalid'); box.textContent = ''; box.classList.remove('on'); }
+  // 에러 메시지가 화면 가운데 보이도록 스크롤하고, 해당 입력칸에 커서를 둡니다.
+  function reveal(el, input){
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (input) setTimeout(function(){ try { input.focus({ preventScroll: true }); } catch(e){ input.focus(); } }, 350);
+  }
+  fName.addEventListener('input', function(){ if (fName.value.trim()) clearField(fName, errName); });
+  fEmail.addEventListener('input', function(){ clearField(fEmail, errEmail); });
+  agrees.concat([]).forEach(function(c){ c.addEventListener('change', function(){ err.textContent = ''; }); });
+
+  agreeAll.addEventListener('change', function(){ agrees.forEach(function(c){ c.checked = agreeAll.checked; }); err.textContent = ''; });
   agrees.forEach(function(c){ c.addEventListener('change', function(){ agreeAll.checked = agrees.every(function(x){ return x.checked; }); }); });
 
   function subscribed(){
@@ -367,9 +385,16 @@
     var fd = new FormData(form);
     var name = (fd.get('name') || '').trim();
     var email = (fd.get('email') || '').trim();
-    if (!name) { err.textContent = '이름을 입력해 주세요.'; return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = '이메일 주소를 다시 확인해 주세요.'; return; }
-    if (!fd.get('consent') || !fd.get('mail')) { err.textContent = '필수 항목에 동의해 주세요.'; return; }
+    clearField(fName, errName); clearField(fEmail, errEmail);
+
+    var nameMsg = name ? '' : '이름을 입력해 주세요.';
+    var emailMsg = !email ? '이메일을 입력해 주세요.'
+      : (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? '이메일 주소를 다시 확인해 주세요.' : '');
+    if (nameMsg) showField(fName, errName, nameMsg);
+    if (emailMsg) showField(fEmail, errEmail, emailMsg);
+    if (nameMsg || emailMsg) { reveal(nameMsg ? errName : errEmail, nameMsg ? fName : fEmail); return; }
+
+    if (!fd.get('consent') || !fd.get('mail')) { err.textContent = '필수 항목에 동의해 주세요.'; reveal(err); return; }
 
     var body = new URLSearchParams();
     body.append('name', name);
