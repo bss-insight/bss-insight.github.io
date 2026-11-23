@@ -41,6 +41,7 @@
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   main,header,footer{position:relative;z-index:1}
+  main{overflow-x:hidden}
   .wrap{max-width:480px;margin:0 auto;padding:0 20px}
   a{color:inherit}
   .en{font-family:Inter,"Pretendard Variable",sans-serif;letter-spacing:-0.035em}
@@ -51,26 +52,26 @@
   .ph{background:rgba(255,215,106,.14);outline:1px dashed rgba(255,215,106,.7);border-radius:3px;padding:0 3px;color:#ffe7a8}
 
   /* 헤더 */
-  header{padding:22px 0 0;position:relative;z-index:2}
+  header{padding:20px 0 0;position:relative;z-index:2}
   .logo{display:block;line-height:0}
   .logo img{height:34px;width:auto}
 
   /* 히어로 */
-  .hero{position:relative;padding:190px 0 40px;overflow:hidden}
-  .curve{position:absolute;right:-70px;top:-6px;width:470px;height:380px;pointer-events:none;
+  .hero{position:relative;padding:96px 0 40px}
+  .curve{position:absolute;right:-70px;top:-74px;width:400px;height:324px;pointer-events:none;
     -webkit-mask-image:linear-gradient(180deg,#000 40%,transparent 62%);mask-image:linear-gradient(180deg,#000 40%,transparent 62%)}
   .curve .ln{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s .2s cubic-bezier(.6,.1,.2,1) forwards}
   .curve .ln:nth-child(2){animation-delay:.3s}
   .curve .ln:nth-child(3){animation-delay:.4s}
   .curve .ln:nth-child(4){animation-delay:.5s}
   @keyframes draw{to{stroke-dashoffset:0}}
-  .kicker{font-size:15px;font-weight:800;color:var(--w60);margin-bottom:14px}
-  h1{position:relative;font-size:38px;line-height:1.18;font-weight:800;letter-spacing:-0.035em}
-  .lead{position:relative;margin-top:18px;font-size:16px;color:var(--w80)}
+  .kicker{font-size:15px;font-weight:800;color:var(--w60);margin-bottom:10px}
+  h1{position:relative;font-size:34px;line-height:1.2;font-weight:800;letter-spacing:-0.035em}
+  .lead{position:relative;margin-top:14px;font-size:15.5px;color:var(--w80)}
   .rule{height:1px;background:var(--w40);margin:30px 0 0}
 
   /* 팟캐스트 카드 */
-  .episode{margin-top:30px;background:#141b30;border:1px solid var(--w08);border-radius:22px;padding:20px;position:relative;overflow:hidden}
+  .episode{margin-top:22px;background:#141b30;border:1px solid var(--w08);border-radius:22px;padding:20px;position:relative;overflow:hidden}
   .episode::after{content:"";position:absolute;right:-40px;top:-40px;width:170px;height:170px;border-radius:50%;
     background:radial-gradient(circle,rgba(92,112,214,.55),transparent 70%)}
   .episode > *{position:relative;z-index:1}
