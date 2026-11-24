@@ -200,8 +200,15 @@
   .modal-box strong{display:block;font-size:21px;font-weight:800;margin-bottom:10px}
   .modal-box p{font-size:15px;color:var(--w80)}
   .modal-box .btn{margin-top:22px}
-  .done-note{display:none;margin-top:10px;font-size:14px !important;color:var(--w60) !important}
-  .kiosk .done-note{display:block}
+  /* 신청 진행 중: 딤 + 회전 표시 + 문구 */
+  .loading{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    background:rgba(5,8,16,.72);backdrop-filter:blur(4px);text-align:center}
+  .loading[hidden]{display:none}
+  .spinner{width:52px;height:52px;border-radius:50%;border:4px solid rgba(255,255,255,.15);border-top-color:var(--cyan);animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading strong{font-size:19px;font-weight:700}
+  .loading p{font-size:14px;color:var(--w60);margin-top:-10px}
+  @media (prefers-reduced-motion:reduce){.spinner{animation-duration:2s}}
   .kiosk footer{display:none}
 
 
@@ -367,11 +374,16 @@
 </footer>
 
 <!-- 신청 완료 모달: 확인을 누르면 빈 신청서로 돌아가 다른 정보로 다시 신청할 수 있습니다. -->
+<div class="loading" id="loading" role="status" aria-live="polite" hidden>
+  <div class="spinner" aria-hidden="true"></div>
+  <strong>신청하는 중입니다</strong>
+  <p>잠시만 기다려 주세요.</p>
+</div>
+
 <div class="modal" id="doneModal" hidden>
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="doneTitle">
     <strong id="doneTitle">구독 신청이 완료되었습니다</strong>
     <p>매주 금요일, 남겨 주신 이메일로<br>바이셀스탠다드 인사이트를 보내드립니다.<br>출퇴근길에 편하게 들어 보세요.</p>
-    <p class="done-note">다음 분을 위해 잠시 후 처음 화면으로 돌아갑니다.</p>
     <button type="button" class="btn" id="doneOk">확인</button>
   </div>
 </div>
@@ -396,6 +408,7 @@
   var modal = document.getElementById('doneModal'), doneOk = document.getElementById('doneOk');
   var err = document.getElementById('err');
   var btn = document.getElementById('submitBtn');
+  var loading = document.getElementById('loading');
   var heroBtn = document.getElementById('heroBtn');
   var sticky = document.getElementById('sticky');
   var agreeAll = document.getElementById('agreeAll');
@@ -498,16 +511,20 @@
 
     btn.disabled = true;
     btn.textContent = '신청하는 중…';
+    loading.hidden = false;
+    var started = Date.now();
+    // 너무 빨리 끝나도 진행 표시가 깜빡이지 않도록 최소 0.8초는 보여 줍니다.
+    function settle(fn){ setTimeout(function(){ loading.hidden = true; fn(); }, Math.max(0, 800 - (Date.now() - started))); }
 
     fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body: body })
       .then(function(){
-        subscribed();
+        settle(subscribed);
       })
-      .catch(function(){
+      .catch(function(){ settle(function(){
         err.textContent = '연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.';
         btn.disabled = false;
         btn.textContent = '구독 신청하기';
-      });
+      }); });
   });
 
   // 폼이 화면에 보이면 하단 고정 버튼을 숨깁니다.
