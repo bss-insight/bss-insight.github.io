@@ -421,10 +421,11 @@
   agrees.forEach(function(c){ c.addEventListener('change', function(){ agreeAll.checked = agrees.every(function(x){ return x.checked; }); }); });
 
 
-  // 주소 뒤 ?mode=kiosk: 아이패드 부스 모드. ?src=…: 유입 경로(없으면 QR, 부스 모드는 ipad)로 시트에 기록됩니다.
+  // 유입 경로(시트에 기록): 키오스크(?mode=kiosk) = ipad / QR 포스터(?src=qr, 이전 QR의 ?src=booth 포함) = qr / 표시 없이 접속 = direct
   var params; try { params = new URLSearchParams(location.search); } catch(e){ params = { get: function(){ return null; } }; }
   var KIOSK = params.get('mode') === 'kiosk';
-  var src = params.get('src') || (KIOSK ? 'ipad' : 'QR');
+  var rawSrc = (params.get('src') || '').toLowerCase();
+  var src = KIOSK ? 'ipad' : (rawSrc === 'qr' || rawSrc === 'booth') ? 'qr' : (rawSrc || 'direct');
 
   // 신청이 끝나면 완료 모달을 띄웁니다. 완료 상태는 기억하지 않으므로 몇 번이든 다시 신청할 수 있습니다.
   var resetTimer = null;
