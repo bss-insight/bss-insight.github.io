@@ -67,7 +67,7 @@
   .logo img{height:34px;width:auto}
 
   /* 히어로 */
-  .hero{position:relative;padding:78px 0 8px}
+  .hero{position:relative;padding:78px 0 30px}
   .curve{display:none;position:absolute;right:-70px;top:-6px;width:470px;height:380px;pointer-events:none;
     -webkit-mask-image:linear-gradient(180deg,#000 40%,transparent 62%);mask-image:linear-gradient(180deg,#000 40%,transparent 62%)}
   .curve .ln{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.4s .2s cubic-bezier(.6,.1,.2,1) forwards}
@@ -120,17 +120,17 @@
   .item p{font-size:14px;color:var(--w60);margin-top:4px}
 
   /* 폼 */
-  form{margin-top:22px;display:grid;gap:14px}
-  label.f{display:grid;gap:6px;font-size:14px;font-weight:600;color:var(--w80)}
+  form{margin-top:0;display:grid;gap:14px}
+  label.f{display:grid;gap:6px;font-size:14px;font-weight:600;color:#fff}
   label.f small{font-weight:500;color:var(--w40)}
   input[type=text],input[type=email],textarea{
-    font:inherit;font-size:16px;padding:14px 15px;border:1.5px solid var(--w15);border-radius:12px;
-    background:var(--w08);color:var(--white);width:100%;outline:none;transition:border-color .2s}
-  input::placeholder,textarea::placeholder{color:rgba(255,255,255,.3)}
+    font:inherit;font-size:16px;padding:14px 15px;border:1px solid #343846;border-radius:12px;
+    background:#1a1e29;color:var(--white);width:100%;outline:none;transition:border-color .2s}
+  input::placeholder,textarea::placeholder{color:rgba(255,255,255,.48)}
   input:focus,textarea:focus{border-color:var(--cyan)}
   textarea{min-height:92px;resize:vertical}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-  .consent{border:1px solid var(--w15);background:var(--w08);border-radius:12px;padding:14px 15px;font-size:14px;display:grid;gap:10px}
+  .consent{border:1px solid #343846;background:#1a1e29;border-radius:12px;padding:14px 15px;font-size:14px;display:grid;gap:10px}
   .consent .all{padding-top:12px;border-top:1px solid var(--w15);font-weight:800}
   .consent label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
   .consent input{appearance:none;-webkit-appearance:none;width:20px;height:20px;flex:none;margin-top:1px;
@@ -179,8 +179,58 @@
   /* 구독 신청하기 버튼: 화면 하단에 항상 고정 */
   .submit-bar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:14px 20px calc(14px + env(safe-area-inset-bottom));
     background:linear-gradient(transparent,rgba(10,13,22,.92) 40%)}
-  .submit-bar .btn{max-width:440px;margin:0 auto;box-shadow:0 8px 24px rgba(48,148,204,.4)}
+  .submit-bar .btn{max-width:440px;margin:0 auto}
   body{padding-bottom:90px}
+
+  /* 신청 완료 모달 */
+  .modal{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(5,8,16,.72);backdrop-filter:blur(4px)}
+  .modal[hidden]{display:none}
+  .modal-box{width:100%;max-width:420px;padding:32px 24px 24px;border-radius:22px;text-align:center;background:#141b30;border:1px solid var(--w15);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .modal-box strong{display:block;font-size:21px;font-weight:800;margin-bottom:10px}
+  .modal-box p{font-size:15px;color:var(--w80)}
+  .modal-box .btn{margin-top:22px}
+  .done-note{display:none;margin-top:10px;font-size:14px !important;color:var(--w60) !important}
+  .kiosk .done-note{display:block}
+  .kiosk footer{display:none}
+
+  /* 부스 모드 대기 화면 */
+  .attract{position:fixed;inset:0;z-index:60;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;
+    background:linear-gradient(180deg,#07090f 0%,#0a0d16 50%,#0c1f30 100%)}
+  .attract[hidden]{display:none}
+  .attract .hero-bg{top:0}
+  .attract-in{position:relative;z-index:1;padding:40px 48px;max-width:900px}
+  .attract-kicker{display:inline-block;padding:8px 16px;border-radius:999px;background:rgba(7,9,15,.55);font-size:17px;font-weight:700;color:#8fd0f5;letter-spacing:.02em}
+  .attract-h{margin-top:18px;font-size:58px;line-height:1.18;font-weight:800;letter-spacing:-0.035em;text-shadow:0 2px 18px rgba(5,8,16,.6)}
+  .attract-sub{margin-top:20px;font-size:22px;color:var(--w80)}
+  .attract-tap{display:inline-block;margin-top:44px;padding:22px 44px;border-radius:16px;background:var(--cyan);color:var(--ink);font-size:24px;font-weight:700;
+    box-shadow:0 10px 30px rgba(48,148,204,.45);animation:tap 2s ease-in-out infinite}
+  @keyframes tap{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  .attract-qr{margin-top:22px;font-size:17px;color:var(--w60)}
+  @media (prefers-reduced-motion:reduce){.attract-tap{animation:none}}
+
+  /* 태블릿 세로(아이패드 세로 등): 한 단, 넓고 크게 */
+  @media (min-width:768px){
+    .wrap{max-width:640px}
+    h1{font-size:46px}
+    .lead{font-size:19px}
+    .ep-title{font-size:19px}
+    .ep-desc{font-size:16px}
+    label.f{font-size:16px}
+    input[type=text],input[type=email],textarea{font-size:18px;padding:16px 18px}
+    .consent{font-size:16px}
+    .submit-bar .btn{max-width:600px}
+  }
+  /* 태블릿 가로: 왼쪽 소개, 오른쪽 신청서 두 단 */
+  @media (min-width:1000px) and (orientation:landscape){
+    header .wrap, footer .wrap{max-width:1160px}
+    main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;max-width:1160px;margin:0 auto;padding:0 20px;align-items:start}
+    main .wrap{max-width:none;padding:0}
+    .hero{padding-top:70px}
+    #listen{padding-top:70px !important}
+    .submit-bar{position:static;padding:10px 0 0;background:none}
+    .submit-bar .btn{max-width:none}
+    body{padding-bottom:0}
+  }
 
   /* 하단 고정 버튼: 폼이 보이면 숨깁니다 */
   .sticky{position:fixed;left:0;right:0;bottom:0;padding:14px 20px calc(14px + env(safe-area-inset-bottom));
@@ -302,10 +352,6 @@
         <div class="submit-bar"><button type="submit" class="btn" id="submitBtn">구독 신청하기</button></div>
       </form>
 
-      <div class="done" id="done">
-        <strong>구독 신청이 완료되었습니다 🎧</strong>
-        <p>새 회차가 나오면 남겨 주신 이메일로 보내 드립니다.<br>출퇴근길에 편하게 들어 보세요.</p>
-      </div>
     </div>
   </section>
 </main>
@@ -322,13 +368,34 @@
   </div>
 </footer>
 
+<!-- 신청 완료 모달: 확인을 누르면 빈 신청서로 돌아가 다른 정보로 다시 신청할 수 있습니다. -->
+<div class="modal" id="doneModal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="doneTitle">
+    <strong id="doneTitle">구독 신청이 완료되었습니다</strong>
+    <p>매주 금요일, 남겨 주신 이메일로<br>바이셀스탠다드 인사이트를 보내드립니다.<br>출퇴근길에 편하게 들어 보세요.</p>
+    <p class="done-note">다음 분을 위해 잠시 후 처음 화면으로 돌아갑니다.</p>
+    <button type="button" class="btn" id="doneOk">확인</button>
+  </div>
+</div>
+
+<!-- 부스 모드(?mode=kiosk) 대기 화면: 아무도 쓰지 않을 때 크게 보여 줍니다. -->
+<div class="attract" id="attract" hidden role="button" tabindex="0" aria-label="화면을 눌러 구독 신청하기">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="attract-in">
+    <p class="attract-kicker">[바이셀스탠다드 인사이트] WEEKLY PODCAST</p>
+    <h2 class="attract-h">토큰증권 동향,<br>출퇴근길에 팟캐스트로 들으세요</h2>
+    <p class="attract-sub">매주 금요일, 한 주의 흐름을 한 편으로 정리해 이메일로 보내드립니다.</p>
+    <span class="attract-tap">화면을 눌러 바로 구독하기</span>
+    <p class="attract-qr">또는 옆의 QR 코드를 휴대폰으로 찍어 주세요</p>
+  </div>
+</div>
+
 <div class="sticky hide is-hidden" id="sticky"><a href="#listen" class="btn">이메일로 구독하기</a></div>
 
 <script>
 (function(){
   // 구글 시트 연결 주소(Apps Script 웹 앱)
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycbyytntcBAK60jNTO1BcHziZH-uQS37w-_1HN0oX5-vuicGlbQQmoYXw8T-qSbn4IzpP/exec';
-  var STORE_KEY = 'bss_insight_subscribed';
 
   // 파형 장식
   var wave = document.getElementById('wave');
@@ -340,12 +407,11 @@
   }
 
   var form = document.getElementById('leadForm');
-  var done = document.getElementById('done');
+  var modal = document.getElementById('doneModal'), doneOk = document.getElementById('doneOk');
   var err = document.getElementById('err');
   var btn = document.getElementById('submitBtn');
   var heroBtn = document.getElementById('heroBtn');
   var sticky = document.getElementById('sticky');
-  var cardMsg = document.getElementById('cardMsg');
   var agreeAll = document.getElementById('agreeAll');
   var agrees = Array.prototype.slice.call(document.querySelectorAll('.agree'));
 
@@ -368,20 +434,59 @@
   agreeAll.addEventListener('change', function(){ agrees.forEach(function(c){ c.checked = agreeAll.checked; }); checkConsent(); });
   agrees.forEach(function(c){ c.addEventListener('change', function(){ agreeAll.checked = agrees.every(function(x){ return x.checked; }); }); });
 
+  var attract = document.getElementById('attract');
+
+  // 주소 뒤 ?mode=kiosk: 아이패드 부스 모드. ?src=…: 유입 경로(없으면 QR, 부스 모드는 ipad)로 시트에 기록됩니다.
+  var params; try { params = new URLSearchParams(location.search); } catch(e){ params = { get: function(){ return null; } }; }
+  var KIOSK = params.get('mode') === 'kiosk';
+  var src = params.get('src') || (KIOSK ? 'ipad' : 'QR');
+
+  // 신청이 끝나면 완료 모달을 띄웁니다. 완료 상태는 기억하지 않으므로 몇 번이든 다시 신청할 수 있습니다.
+  var resetTimer = null;
   function subscribed(){
-    form.style.display = 'none';
-    done.style.display = 'block';
-    cardMsg.textContent = '구독 중입니다. 새 회차를 이메일로 보내 드립니다.';
-    heroBtn.innerHTML = '✓ 구독 신청 완료';
-    sticky.style.display = 'none';
+    modal.hidden = false;
+    try { doneOk.focus({ preventScroll: true }); } catch(e){ doneOk.focus(); }
+    // 부스 모드는 확인을 누르지 않아도 7초 뒤 저절로 닫히고 대기 화면으로 돌아갑니다.
+    if (KIOSK) { clearTimeout(resetTimer); resetTimer = setTimeout(closeModal, 7000); }
   }
+  // 빈 신청서로 되돌립니다.
+  function resetForm(){
+    form.reset();
+    clearField(fName, errName); clearField(fEmail, errEmail);
+    err.textContent = ''; consentBox.classList.remove('invalid');
+    btn.disabled = false; btn.textContent = '구독 신청하기';
+  }
+  function closeModal(){
+    clearTimeout(resetTimer);
+    modal.hidden = true;
+    resetForm();
+    if (KIOSK) { window.scrollTo(0, 0); showAttract(); }
+  }
+  doneOk.addEventListener('click', closeModal);
+  modal.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
 
-  // 이미 신청한 방문자(같은 브라우저)에게는 완료 상태를 보여 줍니다.
-  try { if (localStorage.getItem(STORE_KEY) === 'Y') subscribed(); } catch(e){}
-
-  // QR 주소 뒤에 ?src=booth 처럼 붙이면 유입 경로로 기록됩니다.
-  var src = 'QR';
-  try { src = new URLSearchParams(location.search).get('src') || 'QR'; } catch(e){}
+  if (KIOSK) {
+    document.documentElement.classList.add('kiosk');
+    // 여러 사람이 같은 기기를 쓰므로, 앞사람이 입력한 이름·이메일이 자동완성으로 뜨지 않게 합니다.
+    [fName, fEmail].forEach(function(el){
+      el.setAttribute('autocomplete', 'off'); el.setAttribute('autocorrect', 'off');
+      el.setAttribute('autocapitalize', 'off'); el.setAttribute('spellcheck', 'false');
+    });
+    fEmail.setAttribute('type', 'text');
+  }
+  function showAttract(){ if (KIOSK) { attract.hidden = false; } }
+  function hideAttract(){ attract.hidden = true; bump(); }
+  attract.addEventListener('click', hideAttract);
+  attract.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hideAttract(); } });
+  // 부스 모드에서 1분 동안 아무 조작이 없으면 입력 내용을 지우고 대기 화면으로 돌아갑니다.
+  var idleTimer = null;
+  function bump(){
+    if (!KIOSK) return;
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function(){ modal.hidden = true; clearTimeout(resetTimer); resetForm(); window.scrollTo(0, 0); showAttract(); }, 60000);
+  }
+  ['touchstart', 'pointerdown', 'keydown', 'input', 'scroll'].forEach(function(ev){ window.addEventListener(ev, bump, { passive: true }); });
+  showAttract();
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
@@ -414,9 +519,7 @@
 
     fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body: body })
       .then(function(){
-        try { localStorage.setItem(STORE_KEY, 'Y'); } catch(e){}
         subscribed();
-        done.scrollIntoView({ behavior: 'smooth', block: 'center' });
       })
       .catch(function(){
         err.textContent = '연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.';
