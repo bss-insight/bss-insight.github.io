@@ -220,6 +220,7 @@
   /* 태블릿 가로: 왼쪽 소개, 오른쪽 신청서 두 단 */
   @media (min-width:1000px) and (orientation:landscape){
     header .wrap, footer .wrap{max-width:1160px}
+    header{padding-top:30px} /* 가로 화면에서는 로고를 10px 내립니다 */
     main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;max-width:1160px;margin:0 auto;padding:0 20px;align-items:start}
     main .wrap{max-width:none;padding:0}
     .hero{padding-top:70px}
