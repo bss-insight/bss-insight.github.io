@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0d16">
+<!-- 홈 화면에 추가해서 열면 주소창·탭 없이 전체 화면 앱처럼 열립니다(아이패드 부스용). -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BSS 인사이트">
 <title>[바이셀스탠다드 인사이트] 토큰증권 동향 팟캐스트 구독</title>
 <meta name="description" content="토큰증권 동향, 출퇴근길에 팟캐스트로 들으세요. 바이셀스탠다드 인사이트.">
 <meta name="robots" content="noindex">
@@ -199,20 +204,6 @@
   .kiosk .done-note{display:block}
   .kiosk footer{display:none}
 
-  /* 부스 모드 대기 화면 */
-  .attract{position:fixed;inset:0;z-index:60;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;
-    background:linear-gradient(180deg,#07090f 0%,#0a0d16 50%,#0c1f30 100%)}
-  .attract[hidden]{display:none}
-  .attract .hero-bg{top:0}
-  .attract-in{position:relative;z-index:1;padding:40px 48px;max-width:900px}
-  .attract-kicker{display:inline-block;padding:8px 16px;border-radius:999px;background:rgba(7,9,15,.55);font-size:17px;font-weight:700;color:#8fd0f5;letter-spacing:.02em}
-  .attract-h{margin-top:18px;font-size:58px;line-height:1.18;font-weight:800;letter-spacing:-0.035em;text-shadow:0 2px 18px rgba(5,8,16,.6)}
-  .attract-sub{margin-top:20px;font-size:22px;color:var(--w80)}
-  .attract-tap{display:inline-block;margin-top:44px;padding:22px 44px;border-radius:16px;background:var(--cyan);color:var(--ink);font-size:24px;font-weight:700;
-    box-shadow:0 10px 30px rgba(48,148,204,.45);animation:tap 2s ease-in-out infinite}
-  @keyframes tap{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-  .attract-qr{margin-top:22px;font-size:17px;color:var(--w60)}
-  @media (prefers-reduced-motion:reduce){.attract-tap{animation:none}}
 
   /* 태블릿 세로(아이패드 세로 등): 한 단, 넓고 크게 */
   @media (min-width:768px){
@@ -384,18 +375,6 @@
   </div>
 </div>
 
-<!-- 부스 모드(?mode=kiosk) 대기 화면: 아무도 쓰지 않을 때 크게 보여 줍니다. -->
-<div class="attract" id="attract" hidden role="button" tabindex="0" aria-label="화면을 눌러 구독 신청하기">
-  <div class="hero-bg" aria-hidden="true"></div>
-  <div class="attract-in">
-    <p class="attract-kicker">[바이셀스탠다드 인사이트] WEEKLY PODCAST</p>
-    <h2 class="attract-h">토큰증권 동향,<br>출퇴근길에 팟캐스트로 들으세요</h2>
-    <p class="attract-sub">매주 금요일, 한 주의 흐름을 한 편으로 정리해 이메일로 보내드립니다.</p>
-    <span class="attract-tap">화면을 눌러 바로 구독하기</span>
-    <p class="attract-qr">또는 옆의 QR 코드를 휴대폰으로 찍어 주세요</p>
-  </div>
-</div>
-
 <div class="sticky hide is-hidden" id="sticky"><a href="#listen" class="btn">이메일로 구독하기</a></div>
 
 <script>
@@ -440,7 +419,6 @@
   agreeAll.addEventListener('change', function(){ agrees.forEach(function(c){ c.checked = agreeAll.checked; }); checkConsent(); });
   agrees.forEach(function(c){ c.addEventListener('change', function(){ agreeAll.checked = agrees.every(function(x){ return x.checked; }); }); });
 
-  var attract = document.getElementById('attract');
 
   // 주소 뒤 ?mode=kiosk: 아이패드 부스 모드. ?src=…: 유입 경로(없으면 QR, 부스 모드는 ipad)로 시트에 기록됩니다.
   var params; try { params = new URLSearchParams(location.search); } catch(e){ params = { get: function(){ return null; } }; }
@@ -452,7 +430,7 @@
   function subscribed(){
     modal.hidden = false;
     try { doneOk.focus({ preventScroll: true }); } catch(e){ doneOk.focus(); }
-    // 부스 모드는 확인을 누르지 않아도 7초 뒤 저절로 닫히고 대기 화면으로 돌아갑니다.
+    // 부스 모드는 확인을 누르지 않아도 7초 뒤 저절로 닫히고 빈 신청서의 맨 위로 돌아갑니다.
     if (KIOSK) { clearTimeout(resetTimer); resetTimer = setTimeout(closeModal, 7000); }
   }
   // 빈 신청서로 되돌립니다.
@@ -466,7 +444,7 @@
     clearTimeout(resetTimer);
     modal.hidden = true;
     resetForm();
-    if (KIOSK) { window.scrollTo(0, 0); showAttract(); }
+    if (KIOSK) window.scrollTo(0, 0);
   }
   doneOk.addEventListener('click', closeModal);
   modal.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
@@ -480,19 +458,15 @@
     });
     fEmail.setAttribute('type', 'text');
   }
-  function showAttract(){ if (KIOSK) { attract.hidden = false; } }
-  function hideAttract(){ attract.hidden = true; bump(); }
-  attract.addEventListener('click', hideAttract);
-  attract.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hideAttract(); } });
-  // 부스 모드에서 1분 동안 아무 조작이 없으면 입력 내용을 지우고 대기 화면으로 돌아갑니다.
+  // 부스 모드에서 1분 동안 아무 조작이 없으면 입력 내용을 지우고 맨 위로 돌아갑니다.
   var idleTimer = null;
   function bump(){
     if (!KIOSK) return;
     clearTimeout(idleTimer);
-    idleTimer = setTimeout(function(){ modal.hidden = true; clearTimeout(resetTimer); resetForm(); window.scrollTo(0, 0); showAttract(); }, 60000);
+    idleTimer = setTimeout(function(){ modal.hidden = true; clearTimeout(resetTimer); resetForm(); window.scrollTo(0, 0); }, 60000);
   }
   ['touchstart', 'pointerdown', 'keydown', 'input', 'scroll'].forEach(function(ev){ window.addEventListener(ev, bump, { passive: true }); });
-  showAttract();
+  bump();
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
